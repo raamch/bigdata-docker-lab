@@ -2,7 +2,7 @@
 
 A 4-node Hadoop cluster running in Docker containers. No bare-metal, no drama. 🎉
 
-**Stack:** Apache Ambari 2.7.5 · Bigtop 3.2.1 · Rocky Linux 8 | **Maintainer:** Ram CH
+**Stack:** Apache Ambari 2.7.5 · Bigtop 3.2.1 · Rocky Linux 8
 
 ---
 
