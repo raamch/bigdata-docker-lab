@@ -257,4 +257,4 @@ After stopping a container, Ambari continues showing it as alive for ~5 minutes 
 PostgreSQL lives inside the container, not in an external volume. Running `docker-compose down` destroys the cluster config. Simply run `setup-cluster.sh` again after bringing containers back up.
 
 ---
-"Every great engineer started as a confused beginner with a broken cluster and a browser full of Stack Overflow tabs. Welcome to the journey." 🚀
+Every great engineer started as a confused beginner with a broken cluster — first they Googled, then they Stack Overflowed, now they just ask AI. The struggle evolves. Welcome to the journey. 🚀
