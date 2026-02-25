@@ -57,7 +57,7 @@ services:
       - "6667:6667"     # Kafka Broker
       # Zeppelin
       - "9995:9995"     # Zeppelin UI
-    mem_limit: 4g
+    mem_limit: 8g
 
   ambari-s1:
     image: raamch/ambari:2.7.5-rl8
@@ -73,7 +73,7 @@ services:
         ipv4_address: 10.10.0.11
     ports:
       - "2222:22"
-    mem_limit: 2g
+    mem_limit: 4g
     depends_on:
       - ambari-server
 
@@ -91,7 +91,7 @@ services:
         ipv4_address: 10.10.0.12
     ports:
       - "2223:22"
-    mem_limit: 2g
+    mem_limit: 4g
     depends_on:
       - ambari-server
 
@@ -109,6 +109,6 @@ services:
         ipv4_address: 10.10.0.13
     ports:
       - "2224:22"
-    mem_limit: 2g
+    mem_limit: 4g
     depends_on:
       - ambari-server
