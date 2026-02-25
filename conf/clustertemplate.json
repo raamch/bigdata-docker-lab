@@ -1,0 +1,38 @@
+{
+  "blueprint": "ambari_cluster",
+  "config_recommendation_strategy": "NEVER_APPLY",
+  "provision_action": "INSTALL_AND_START",
+  "configurations": [],
+  "host_groups": [
+    {
+      "name": "host_group_0",
+      "hosts": [
+        {
+          "fqdn": "ambari-server.ambari.local"
+        }
+      ]
+    },
+    {
+      "name": "host_group_1",
+      "hosts": [
+        {
+          "fqdn": "ambari-s1.ambari.local"
+        }
+      ]
+    },
+    {
+      "name": "host_group_2",
+      "hosts": [
+        {
+          "fqdn": "ambari-s2.ambari.local"
+        },
+        {
+          "fqdn": "ambari-s3.ambari.local"
+        }
+      ]
+    }
+  ],
+  "Clusters": {
+    "cluster_name": "ambari_cluster"
+  }
+}

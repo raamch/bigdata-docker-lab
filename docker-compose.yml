@@ -1,0 +1,114 @@
+version: '3.8'
+
+networks:
+  ambari-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+
+  ambari-server:
+    image: raamch/ambari:2.7.5-rl8
+    container_name: ambari-server
+    hostname: ambari-server
+    domainname: ambari.local
+    command: ["/usr/local/bin/entrypoint-server.sh"]
+    privileged: true
+    environment:
+      - AMBARI_SERVER=ambari-server.ambari.local
+    networks:
+      ambari-net:
+        ipv4_address: 10.10.0.10
+    ports:
+      - "2221:22"
+      - "8080:8080"     # Ambari Web UI
+      # HDFS
+      - "50070:50070"   # NameNode UI
+      - "50470:50470"   # NameNode HTTPS UI
+      - "8020:8020"     # NameNode RPC
+      - "50090:50090"   # Secondary NameNode UI
+      # YARN
+      - "8088:8088"     # Resource Manager UI
+      - "8090:8090"     # Resource Manager HTTPS UI
+      - "8050:8050"     # Resource Manager Scheduler
+      - "8025:8025"     # Resource Manager Resource Tracker
+      # MapReduce
+      - "19888:19888"   # Job History Server UI
+      - "10020:10020"   # Job History Server RPC
+      # ZooKeeper
+      - "2181:2181"     # ZooKeeper Client Port
+      # Hive
+      - "10000:10000"   # HiveServer2
+      - "10002:10002"   # HiveServer2 Web UI
+      - "9083:9083"     # Hive Metastore
+      # HBase
+      - "16000:16000"   # HBase Master RPC
+      - "16010:16010"   # HBase Master UI
+      - "16020:16020"   # HBase RegionServer RPC
+      - "16030:16030"   # HBase RegionServer UI
+      # Spark
+      - "4040:4040"     # Spark Application UI (active jobs)
+      - "18080:18080"   # Spark History Server UI
+      # Oozie
+      - "11000:11000"   # Oozie Web UI
+      # Kafka
+      - "6667:6667"     # Kafka Broker
+      # Zeppelin
+      - "9995:9995"     # Zeppelin UI
+    mem_limit: 4g
+
+  ambari-s1:
+    image: raamch/ambari:2.7.5-rl8
+    container_name: ambari-s1
+    hostname: ambari-s1
+    domainname: ambari.local
+    command: ["/usr/local/bin/entrypoint-slave.sh"]
+    privileged: true
+    environment:
+      - AMBARI_SERVER=ambari-server.ambari.local
+    networks:
+      ambari-net:
+        ipv4_address: 10.10.0.11
+    ports:
+      - "2222:22"
+    mem_limit: 2g
+    depends_on:
+      - ambari-server
+
+  ambari-s2:
+    image: raamch/ambari:2.7.5-rl8
+    container_name: ambari-s2
+    hostname: ambari-s2
+    domainname: ambari.local
+    command: ["/usr/local/bin/entrypoint-slave.sh"]
+    privileged: true
+    environment:
+      - AMBARI_SERVER=ambari-server.ambari.local
+    networks:
+      ambari-net:
+        ipv4_address: 10.10.0.12
+    ports:
+      - "2223:22"
+    mem_limit: 2g
+    depends_on:
+      - ambari-server
+
+  ambari-s3:
+    image: raamch/ambari:2.7.5-rl8
+    container_name: ambari-s3
+    hostname: ambari-s3
+    domainname: ambari.local
+    command: ["/usr/local/bin/entrypoint-slave.sh"]
+    privileged: true
+    environment:
+      - AMBARI_SERVER=ambari-server.ambari.local
+    networks:
+      ambari-net:
+        ipv4_address: 10.10.0.13
+    ports:
+      - "2224:22"
+    mem_limit: 2g
+    depends_on:
+      - ambari-server
