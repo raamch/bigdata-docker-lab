@@ -1,24 +1,22 @@
-# 🐘 BigData Cluster Setup using Bigtop 3.2.1 with Ambari 2.7.5
+# 🐘 BigData Cluster Setup — Bigtop 3.2.1 + Ambari 2.7.5
 
-> A fully containerised 4-node Hadoop cluster for learning and experimenting with BigData technologies.
-> No bare-metal drama. No "it works on my machine". Just Docker and good vibes. 🎉
+A 4-node Hadoop cluster running in Docker containers. No bare-metal, no drama. 🎉
 
-**Maintainer:** Ram CH | **Stack:** Apache Ambari 2.7.5 · Bigtop 3.2.1 · Rocky Linux 8
+**Stack:** Apache Ambari 2.7.5 · Bigtop 3.2.1 · Rocky Linux 8 | **Maintainer:** Ram CH
 
 ---
 
-## 🏗️ Cluster Architecture
+## 🖧 Cluster Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Your Machine                             │
-│                      (Docker Host)                              │
+│                        Your Machine (Docker Host)               │
 │                                                                 │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │                  ambari-net (10.10.0.0/24)               │  │
 │  │                                                          │  │
 │  │  ┌─────────────────────────┐                            │  │
-│  │  │  ambari-server          │  10.10.0.10  (4GB RAM)     │  │
+│  │  │  ambari-server          │  10.10.0.10  (8GB RAM)     │  │
 │  │  │  ─────────────────────  │                            │  │
 │  │  │  • Ambari Server        │◄──────────────────────┐   │  │
 │  │  │  • NameNode             │                       │   │  │
@@ -27,7 +25,7 @@
 │  │  └─────────────────────────┘                       │   │  │
 │  │                                                    │   │  │
 │  │  ┌─────────────────────────┐                       │   │  │
-│  │  │  ambari-s1              │  10.10.0.11  (2GB RAM) │   │  │
+│  │  │  ambari-s1              │  10.10.0.11  (4GB RAM) │   │  │
 │  │  │  ─────────────────────  │                       │   │  │
 │  │  │  • SecondaryNameNode    │◄──── Ambari Agent ────┤   │  │
 │  │  │  • DataNode             │       Heartbeat ♥     │   │  │
@@ -36,7 +34,7 @@
 │  │  └─────────────────────────┘                       │   │  │
 │  │                                                    │   │  │
 │  │  ┌─────────────────────────┐                       │   │  │
-│  │  │  ambari-s2              │  10.10.0.12  (2GB RAM) │   │  │
+│  │  │  ambari-s2              │  10.10.0.12  (4GB RAM) │   │  │
 │  │  │  ─────────────────────  │                       │   │  │
 │  │  │  • DataNode             │◄──── Ambari Agent ────┤   │  │
 │  │  │  • NodeManager          │       Heartbeat ♥     │   │  │
@@ -44,7 +42,7 @@
 │  │  └─────────────────────────┘                       │   │  │
 │  │                                                    │   │  │
 │  │  ┌─────────────────────────┐                       │   │  │
-│  │  │  ambari-s3              │  10.10.0.13  (2GB RAM) │   │  │
+│  │  │  ambari-s3              │  10.10.0.13  (4GB RAM) │   │  │
 │  │  │  ─────────────────────  │                       │   │  │
 │  │  │  • DataNode             │◄──── Ambari Agent ────┘   │  │
 │  │  │  • NodeManager          │       Heartbeat ♥         │  │
@@ -58,196 +56,174 @@
 
 ## 🧰 Pre-requisites
 
-### Docker
+Docker Desktop is required to run the cluster. It packages all 4 nodes as lightweight containers on your machine — no need for 4 physical servers.
 
-Docker is a platform that packages applications into lightweight, portable containers — think of it as a mini virtual machine, but faster and far less painful to set up. We use it here to run all 4 cluster nodes on your single machine without needing 4 physical servers. Your laptop is basically a data centre now. You're welcome. 😄
+Download and install Docker Desktop for your OS:
 
-**Install Docker Desktop:**
-
-| OS | Download Link |
+| OS | Download |
 |---|---|
 | Windows | https://docs.docker.com/desktop/install/windows-install/ |
 | Mac | https://docs.docker.com/desktop/install/mac-install/ |
 | Linux | https://docs.docker.com/desktop/install/linux-install/ |
 
-**Install Steps:**
-1. Download Docker Desktop from the link for your OS above
-2. Run the installer and follow the on-screen instructions
-3. Launch Docker Desktop and wait for it to start (look for the whale icon 🐳 in your taskbar/menu bar)
-4. Open a terminal and verify everything is working:
+After installing, launch Docker Desktop and verify it's running:
 ```bash
-docker --version
-docker-compose --version
+docker --version && docker-compose --version
 ```
 
 ---
 
-## 🐳 Launching Your Containers
+## 🐳 Launching Containers
 
-### Step 1 — Download docker-compose.yml
+All you need is the `docker-compose.yml` file. No cloning, no building — Docker pulls everything automatically.
 
-Download the `docker-compose.yml` file and save it into a folder on your machine (e.g. `bigdata-docker-lab`):
+**1. Create a project folder and download the file into it:**
 
+> 💡 **Windows users:** Open PowerShell as Administrator (right-click PowerShell → Run as Administrator)
+
+```bash
+# Create folder and navigate into it
+mkdir bigdata-docker-lab
+cd bigdata-docker-lab
+
+# Download docker-compose.yml
+# Windows (PowerShell)
+curl -o docker-compose.yml https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/docker-compose.yml
+
+# Mac / Linux
+wget -O docker-compose.yml https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/docker-compose.yml
+```
+
+Or download directly from your browser and save into the folder:
 ```
 https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/docker-compose.yml
 ```
 
-Right-click the link → Save As → choose your folder.
-
-### Step 2 — Tune RAM (Optional but Recommended for Laptops 💻)
-
-Running 4 containers simultaneously is hungry work. If you're on a laptop or a machine with limited RAM, open `docker-compose.yml` in any text editor and reduce the memory limits:
-
-| Container | Default | Laptop Friendly |
-|---|---|---|
-| ambari-server | `mem_limit: 4g` | `mem_limit: 2g` |
-| ambari-s1 | `mem_limit: 2g` | `mem_limit: 1g` |
-| ambari-s2 | `mem_limit: 2g` | `mem_limit: 1g` |
-| ambari-s3 | `mem_limit: 2g` | `mem_limit: 1g` |
-
-### Step 3 — Open a Terminal
-
-Open a terminal (Command Prompt or PowerShell on Windows, Terminal on Mac/Linux) and navigate to the folder where you saved `docker-compose.yml`:
-
-```bash
-cd C:\bigdata-docker-lab        # Windows
-cd ~/bigdata-docker-lab         # Mac / Linux
-```
-
-### Step 4 — Fire It Up 🔥
+**2. Fire up the containers:**
 
 ```bash
 docker-compose up -d
 ```
 
-Docker will pull the image from Docker Hub on first run (about 2GB — perfect time for a coffee ☕). All 4 containers will start automatically.
+Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). All 4 containers start automatically.
 
-> ⏳ **Wait at least 30 seconds** after the containers start before touching anything. Ambari Server needs time to wake up and initialise. Yes, we know you're excited. Deep breaths. 30 seconds. Go.
+> ⏳ Wait at least 30 seconds before proceeding — Ambari Server needs time to initialise.
 
-### Useful Docker Commands
+**Handy Docker commands:**
 
-| Command | What it does |
+| Command | Description |
 |---|---|
-| `docker-compose up -d` | Start all containers in background |
+| `docker-compose up -d` | Start all containers in the background |
 | `docker-compose down` | Stop and destroy all containers |
-| `docker-compose start` | Start previously stopped containers |
-| `docker-compose stop` | Stop all containers (keeps data) |
-| `docker ps` | List all running containers |
+| `docker-compose start/stop` | Start/stop without destroying containers |
 | `docker stop ambari-s3` | Stop a single container |
-| `docker start ambari-s3` | Start a single stopped container |
-| `docker logs ambari-server` | View server logs |
+| `docker start ambari-s3` | Start a single container |
 
 ---
 
-## ⚙️ Creating Your Cluster
+## ⚙️ Creating the Cluster
 
-Once your containers are running and Ambari is ready, you have two ways to create the cluster:
+Once containers are running, set up your Hadoop cluster in one of two ways:
 
-### 🖱️ The Manual Way
+### 🖱️ Manual — Learn by Doing
+Open Ambari UI, login and follow the cluster creation wizard step by step. Great for understanding what goes where.
+```
+http://ambari-server:8080
+```
+Login: `admin / admin`
 
-For those who enjoy clicking through wizards and want to understand every step of the cluster setup process. Open Ambari UI at `http://ambari-server:8080`, login with `admin / admin` and follow the cluster creation wizard — it will guide you through selecting services, assigning components to hosts, and configuring settings.
-
-### ⚡ The Smart Way (Auto Script)
-
-Why click through 15 wizard screens when a script can do it in seconds? This uses the Ambari Blueprint API to provision the entire cluster automatically.
+### ⚡ Auto Script — For the Creatively Lazy 🛋️
+Why click through 15 wizard screens when a single command does it all? The setup script uses the Ambari Blueprint API to provision the entire cluster automatically.
 
 ```bash
 docker exec ambari-server /usr/local/bin/setup-cluster.sh
 ```
 
-> ⏳ The script submits the cluster creation request and exits immediately. The actual installation runs in the background and takes **10-15 minutes**. Monitor the progress at `http://ambari-server:8080` → click **Background Operations** button in the top right corner.
+The script submits the request and exits — installation continues in the background. Monitor progress here:
+```
+http://ambari-server:8080/#/main/background-operations
+```
+> ⏳ Installation takes 10-30 minutes depending on your machine spec. Services will appear red until complete — that's normal, not a fire. 🔥
 
-> ⚠️ If you need to reinstall from scratch, delete the existing cluster via the Ambari UI first, then run the script again.
+> ⚠️ **To reinstall from scratch**, run these commands first to delete the existing cluster and blueprint, then rerun the script:
+> ```bash
+> # Stop all services first
+> curl -s -u admin:admin -H "X-Requested-By: ambari" \
+>      -X PUT http://localhost:8080/api/v1/clusters/ambari_cluster/services \
+>      -d '{"RequestInfo":{"context":"Stop All Services"},"Body":{"ServiceInfo":{"state":"INSTALLED"}}}'
+>
+> # Wait a few minutes, then delete cluster and blueprint
+> curl -s -u admin:admin -H "X-Requested-By: ambari" \
+>      -X DELETE http://localhost:8080/api/v1/clusters/ambari_cluster
+>
+> curl -s -u admin:admin -H "X-Requested-By: ambari" \
+>      -X DELETE http://localhost:8080/api/v1/blueprints/ambari_cluster
+> ```
 
 ---
 
-## 🗺️ Hosts File Setup
+## 🗺️ Hosts File
 
-To use `ambari-server` as a hostname in your browser (instead of typing IP addresses), add the following entries to your machine's hosts file.
+Your system's hosts file acts as a personal phonebook — it maps hostnames to IP addresses so your browser knows where to find `ambari-server` without you having to remember or type IP addresses. Add the entries below once and forget about IPs forever.
 
-### Windows
-1. Search for **Notepad** → Right-click → **Run as Administrator** (this step is important — don't skip it!)
-2. Open the file: `C:\Windows\System32\drivers\etc\hosts`
-3. Add the following lines at the bottom:
+**Windows** — Open Notepad as Administrator, then open:
+`C:\Windows\System32\drivers\etc\hosts`
 
-```
-10.10.0.10  ambari-server.ambari.local  ambari-server
-10.10.0.11  ambari-s1.ambari.local      ambari-s1
-10.10.0.12  ambari-s2.ambari.local      ambari-s2
-10.10.0.13  ambari-s3.ambari.local      ambari-s3
-```
-
-4. Save the file
-
-### Linux / Mac
-1. Open a terminal and edit the hosts file:
+**Linux / Mac:**
 ```bash
 sudo nano /etc/hosts
 ```
-2. Add the following lines at the bottom:
+
+Add these lines:
 ```
+# Ambari container hostnames
 10.10.0.10  ambari-server.ambari.local  ambari-server
 10.10.0.11  ambari-s1.ambari.local      ambari-s1
 10.10.0.12  ambari-s2.ambari.local      ambari-s2
 10.10.0.13  ambari-s3.ambari.local      ambari-s3
 ```
-3. Save and exit: `Ctrl+X` → `Y` → `Enter`
 
 ---
 
-## 🔗 All the Links You'll Ever Need
+## 🌐 BigData Service Links & Credentials
+
+All services run on `ambari-server`. Links become active once the service is installed and started via Ambari.
 
 | Service | URL | Credentials |
 |---|---|---|
-| **Ambari Web UI** | http://ambari-server:8080 | admin / admin |
-| **HDFS NameNode UI** | http://ambari-server:50070 | — |
-| **YARN Resource Manager** | http://ambari-server:8088 | — |
-| **MapReduce Job History** | http://ambari-server:19888 | — |
-| **HBase Master UI** | http://ambari-server:16010 | — |
-| **Spark History Server** | http://ambari-server:18080 | — |
-| **Spark Active Job UI** | http://ambari-server:4040 | — (only visible when a job is running) |
-| **Oozie Web UI** | http://ambari-server:11000 | — |
-| **Zeppelin Notebook** | http://ambari-server:9995 | — |
-| **HiveServer2 Web UI** | http://ambari-server:10002 | — |
+| Ambari UI | http://ambari-server:8080 | admin / admin |
+| HDFS NameNode | http://ambari-server:50070 | — |
+| YARN Resource Manager | http://ambari-server:8088 | — |
+| MapReduce Job History | http://ambari-server:19888 | — |
+| HBase Master | http://ambari-server:16010 | — |
+| Spark History Server | http://ambari-server:18080 | — |
+| Spark Active Job | http://ambari-server:4040 | — (only when a job is running) |
+| Oozie | http://ambari-server:11000 | — |
+| Zeppelin | http://ambari-server:9995 | — |
+| HiveServer2 | http://ambari-server:10002 | — |
 
-> 💡 Links only work after the respective service has been installed and started via Ambari. Don't panic if they don't load straight away — the service just isn't installed yet.
+**OS Credentials:**
 
----
-
-## 🔑 Credentials Cheat Sheet
-
-Keep this handy. You'll be referring to it more than you'd like to admit.
-
-| What | Username | Password |
+| User | Password | Notes |
 |---|---|---|
-| Ambari Web UI | `admin` | `admin` |
-| OS Root User | `root` | `ambariroot` |
-| OS Ambari User | `ambari` | `bigdatalab` |
+| `ambari` | `bigdatalab` | Standard user with sudo |
+| `root` | `ambariroot` | Root access |
 
 ---
 
-## 🖥️ Connecting to Containers
+## 💻 Connecting to Containers in Command Mode
 
-**Using Docker exec (quickest way):**
+Connect to any container directly using Docker or SSH to run commands, explore the filesystem, or troubleshoot.
+
+**Docker exec — quickest way:**
 ```bash
-# Connect to the server
 docker exec -it ambari-server bash
-
-# Connect to a slave node
 docker exec -it ambari-s1 bash
-docker exec -it ambari-s2 bash
-docker exec -it ambari-s3 bash
 ```
 
-Once inside a container, you can switch to the ambari user:
-```bash
-su - ambari
-# Password: bigdatalab
-```
+**SSH — when you need a proper terminal session:**
 
-**Using SSH** (make sure hosts file is configured first):
-
-| Container | SSH Command | Port |
+| Container | Command | Port |
 |---|---|---|
 | ambari-server | `ssh ambari@ambari-server -p 2221` | 2221 |
 | ambari-s1 | `ssh ambari@ambari-s1 -p 2222` | 2222 |
@@ -258,20 +234,27 @@ Password for all: `bigdatalab`
 
 ---
 
-## 🐛 Known Issues & Quirks
+## 💡 Tuning for Laptop
 
-**Blank Dashboard in Ambari UI**
-The metrics/graphs area on the Ambari dashboard appears blank. This is because Ambari Metrics packages (`ambari-metrics-monitor`, `ambari-metrics-collector`) are not available in the Bigtop 3.2.1 repository and need to be built separately from source (see JIRA: AMBARI-25918). Everything else works perfectly fine — the blank area is purely cosmetic. Think of it as minimalist design. 🎨
+Running on a laptop with limited RAM? Edit the `mem_limit` values in `docker-compose.yml` before starting the containers. Two suggested options:
 
-**Heartbeat Delay**
-If you stop a container (`docker stop ambari-s3`), Ambari will still show it as alive for about 5 minutes. This is normal — Ambari waits for several missed heartbeats before marking a host as down. No need to raise the alarm just yet.
-
-**Services Show Red/Orange After Auto Setup**
-After running `setup-cluster.sh`, services may appear red or orange in the Ambari UI. The installation is still running in the background — give it 10-15 minutes and they will turn green. Patience is a virtue, especially in BigData. 😅
-
-**docker-compose down Wipes the Cluster**
-Since the PostgreSQL database lives inside the container (not in an external volume), running `docker-compose down` will delete all cluster configuration. You will need to run `setup-cluster.sh` again after `docker-compose up -d`. Think of it as a fresh start every time. 🧹
+| Container | Option 1 | Option 2 |
+|---|---|---|
+| ambari-server | `4g` | `2g` |
+| ambari-s1/s2/s3 | `2g` | `1g` |
 
 ---
 
-*Happy clustering! May your DataNodes always be live, your jobs never fail, and your YARN queues never fill up. 🚀*
+## 🔧 Heads Up — Things You Should Know
+
+**Blank Ambari Dashboard**
+The metrics/graphs area on the dashboard appears blank. Ambari Metrics packages (`ambari-metrics-monitor` etc.) are not available in the Bigtop 3.2.1 repo and require a separate build (AMBARI-25918). All services work perfectly — the blank area is cosmetic only.
+
+**Heartbeat Delay**
+After stopping a container, Ambari continues showing it as alive for ~5 minutes while it waits for missed heartbeats. No cause for alarm.
+
+**Cluster Wiped on docker-compose down**
+PostgreSQL lives inside the container, not in an external volume. Running `docker-compose down` destroys the cluster config. Simply run `setup-cluster.sh` again after bringing containers back up.
+
+---
+"Every great engineer started as a confused beginner with a broken cluster and a browser full of Stack Overflow tabs. Welcome to the journey." 🚀
