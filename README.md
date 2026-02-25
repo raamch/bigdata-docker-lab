@@ -133,7 +133,7 @@ http://ambari-server:8080
 Login: `admin / admin`
 
 ### ⚡ Auto Script — For the Creatively Lazy 🛋️
-Why click through 15 wizard screens when a single command does it all? The setup script uses the Ambari Blueprint API to provision the entire cluster automatically.
+Ain't nobody got time for 15 wizard screens. One command, one coffee, one fully provisioned cluster.
 
 ```bash
 docker exec ambari-server /usr/local/bin/setup-cluster.sh
