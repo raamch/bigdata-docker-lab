@@ -107,7 +107,7 @@ docker-compose up -d
 
 Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). All 4 containers start automatically.
 
-> ⏳ Wait at least 30 seconds before proceeding — Ambari Server needs time to initialise.
+> ⏳ Once all containers are ready, wait at least 30 seconds before proceeding — Ambari Server needs time to initialise.
 
 **Handy Docker commands:**
 
@@ -119,9 +119,16 @@ Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). Al
 | `docker stop ambari-s3` | Stop a single container |
 | `docker start ambari-s3` | Start a single container |
 
+> 🔄 **To scrap everything and start fresh** — stop and destroy all containers, then bring them back up:
+> ```bash
+> docker-compose down
+> docker-compose up -d
+> ```
+> Then run `setup-cluster.sh` again to recreate the cluster.
+
 ---
 
-## ⚙️ Creating the Cluster
+## ⚙️ Configure Ambari Cluster
 
 Once containers are running, set up your Hadoop cluster in one of two ways:
 
@@ -133,7 +140,7 @@ http://ambari-server:8080
 Login: `admin / admin`
 
 ### ⚡ Auto Script — For the Creatively Lazy 🛋️
-Ain't nobody got time for 15 wizard screens. One command, one coffee, one fully provisioned cluster.
+Ain't nobody got time for 15 wizard screens. One command, one coffee, one fully provisioned cluster — complete with **HDFS, YARN and MapReduce2** installed and ready to use.
 
 ```bash
 docker exec ambari-server /usr/local/bin/setup-cluster.sh
@@ -209,6 +216,11 @@ All services run on `ambari-server`. Links become active once the service is ins
 | `ambari` | `bigdatalab` | Standard user with sudo |
 | `root` | `ambariroot` | Root access |
 
+
+> ⚠️ **Educational Use Only** — All credentials above are intentional defaults for a lab environment.
+> Do **not** use these in any production system. They are shared here purely to help you get started.
+> 🔐 **Change your passwords after first login** — especially if this cluster is accessible outside your local machine.
+
 ---
 
 ## 💻 Connecting to Containers in Command Mode
@@ -257,4 +269,4 @@ After stopping a container, Ambari continues showing it as alive for ~5 minutes 
 PostgreSQL lives inside the container, not in an external volume. Running `docker-compose down` destroys the cluster config. Simply run `setup-cluster.sh` again after bringing containers back up.
 
 ---
-Every great engineer started as a confused beginner with a broken cluster — first they Googled, then they Stack Overflowed, now they just ask AI. The struggle evolves. Welcome to the journey. 🚀
+*"Every great engineer started as a confused beginner with a broken cluster — first they Googled, then they Stack Overflowed, now they just ask AI. The struggle evolves. Welcome to the journey."* 🚀
