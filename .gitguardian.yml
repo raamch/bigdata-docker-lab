@@ -1,0 +1,11 @@
+# GitGuardian configuration
+# These are intentional default credentials for an educational lab environment.
+# They are NOT production secrets and are meant to be shared with students.
+
+ignore-known-secrets: true
+
+paths-ignore:
+  - README.md
+  - Dockerfile
+  - scripts/entrypoint-server.sh
+  - scripts/entrypoint-slave.sh
