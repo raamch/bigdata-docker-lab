@@ -71,7 +71,31 @@ After installing, launch Docker Desktop and verify it's running:
 docker --version && docker-compose --version
 ```
 
+
+
+## 🗺️ Hosts File
+
+Your system's hosts file acts as a personal phonebook — it maps hostnames to IP addresses so your browser knows where to find `ambari-server` without you having to remember or type IP addresses. Add the entries below once and forget about IPs forever.
+
+**Windows** — Open Notepad as Administrator, then open:
+`C:\Windows\System32\drivers\etc\hosts`
+
+**Linux / Mac:**
+```bash
+sudo nano /etc/hosts
+```
+
+Add these lines:
+```
+# Ambari container hostnames
+10.10.0.10  ambari-server.ambari.local  ambari-server
+10.10.0.11  ambari-s1.ambari.local      ambari-s1
+10.10.0.12  ambari-s2.ambari.local      ambari-s2
+10.10.0.13  ambari-s3.ambari.local      ambari-s3
+```
+
 ---
+
 
 ## 🐳 Launching Containers
 
@@ -79,7 +103,7 @@ All you need is the `docker-compose.yml` file. No cloning, no building — Docke
 
 **1. Create a project folder and download the file into it:**
 
-> 💡 **Windows users:** Open PowerShell as Administrator (right-click PowerShell → Run as Administrator)
+> 💡 **Windows users:** Open cmd as Administrator (right-click cmd → Run as Administrator)
 
 ```bash
 # Create folder and navigate into it
@@ -169,28 +193,6 @@ http://ambari-server:8080/#/main/background-operations
 
 ---
 
-## 🗺️ Hosts File
-
-Your system's hosts file acts as a personal phonebook — it maps hostnames to IP addresses so your browser knows where to find `ambari-server` without you having to remember or type IP addresses. Add the entries below once and forget about IPs forever.
-
-**Windows** — Open Notepad as Administrator, then open:
-`C:\Windows\System32\drivers\etc\hosts`
-
-**Linux / Mac:**
-```bash
-sudo nano /etc/hosts
-```
-
-Add these lines:
-```
-# Ambari container hostnames
-10.10.0.10  ambari-server.ambari.local  ambari-server
-10.10.0.11  ambari-s1.ambari.local      ambari-s1
-10.10.0.12  ambari-s2.ambari.local      ambari-s2
-10.10.0.13  ambari-s3.ambari.local      ambari-s3
-```
-
----
 
 ## 🌐 BigData Service Links & Credentials
 
@@ -208,18 +210,6 @@ All services run on `ambari-server`. Links become active once the service is ins
 | Oozie | http://ambari-server:11000 | — |
 | Zeppelin | http://ambari-server:9995 | — |
 | HiveServer2 | http://ambari-server:10002 | — |
-
-**OS Credentials:**
-
-| User | Password | Notes |
-|---|---|---|
-| `ambari` | `bigdatalab` | Standard user with sudo |
-| `root` | `ambariroot` | Root access |
-
-
-> ⚠️ **Educational Use Only** — All credentials above are intentional defaults for a lab environment.
-> Do **not** use these in any production system. They are shared here purely to help you get started.
-> 🔐 **Change your passwords after first login** — especially if this cluster is accessible outside your local machine.
 
 ---
 
@@ -242,7 +232,17 @@ docker exec -it ambari-s1 bash
 | ambari-s2 | `ssh ambari@ambari-s2 -p 2223` | 2223 |
 | ambari-s3 | `ssh ambari@ambari-s3 -p 2224` | 2224 |
 
-Password for all: `bigdatalab`
+**OS Credentials:**
+
+| User | Password | Notes |
+|---|---|---|
+| `ambari` | `bigdatalab` | Standard user with sudo |
+| `root` | `ambariroot` | Root access |
+
+
+> ⚠️ **Educational Use Only** — All credentials above are intentional defaults for a lab environment.
+> Do **not** use these in any production system. They are shared here purely to help you get started.
+> 🔐 **Change your passwords after first login** — especially if this cluster is accessible outside your local machine.
 
 ---
 
