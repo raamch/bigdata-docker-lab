@@ -58,17 +58,81 @@ A 4-node Hadoop cluster running in Docker containers. No bare-metal, no drama. �
 
 Docker Desktop is required to run the cluster. It packages all 4 nodes as lightweight containers on your machine — no need for 4 physical servers.
 
-Download and install Docker Desktop for your OS:
+Install Docker Desktop for your OS:
 
-| OS | Download |
-|---|---|
-| Windows | https://docs.docker.com/desktop/install/windows-install/ |
-| Mac | https://docs.docker.com/desktop/install/mac-install/ |
-| Linux | https://docs.docker.com/desktop/install/linux-install/ |
+### 🪟 Windows (CMD — run as Administrator)
+```cmd
+:: Download Docker Desktop installer
+curl -o DockerDesktopInstaller.exe "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
 
-After installing, launch Docker Desktop and verify it's running:
+:: Run silent install
+DockerDesktopInstaller.exe install --quiet --accept-license
+
+:: Start Docker Desktop
+start "" "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+```
+
+> 🔁 After install, **restart your machine** before proceeding.
+
+---
+
+### 🍎 Mac (Terminal)
 ```bash
-docker --version && docker-compose --version
+# Apple Silicon (M1/M2/M3)
+curl -o DockerDesktop.dmg "https://desktop.docker.com/mac/main/arm64/Docker.dmg"
+
+# Intel Mac
+# curl -o DockerDesktop.dmg "https://desktop.docker.com/mac/main/amd64/Docker.dmg"
+
+# Mount and install
+hdiutil attach DockerDesktop.dmg
+sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license
+hdiutil detach /Volumes/Docker
+
+# Launch Docker Desktop
+open /Applications/Docker.app
+```
+
+> ⏳ Wait for Docker to fully start (whale icon in the menu bar stops animating) before proceeding.
+
+---
+
+### 🐧 Linux (Ubuntu / Debian)
+```bash
+# Remove old Docker versions if any
+sudo apt-get remove -y docker docker-engine docker.io containerd runc 2>/dev/null
+
+# Install dependencies
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+
+# Add Docker's official GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add Docker repo
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine + Compose plugin
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start Docker and enable on boot
+sudo systemctl enable --now docker
+
+# Allow running Docker without sudo (re-login after this)
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+> ⚠️ On Linux, `docker compose` (plugin) is used instead of `docker-compose`. All commands in this guide work with both.
+
+---
+
+After installing, verify Docker is running:
+```bash
+docker --version && docker compose version
 ```
 
 
@@ -179,16 +243,12 @@ http://ambari-server:8080/#/main/background-operations
 > ⚠️ **To reinstall from scratch**, run these commands first to delete the existing cluster and blueprint, then rerun the script:
 > ```bash
 > # Stop all services first
-> curl -s -u admin:admin -H "X-Requested-By: ambari" \
->      -X PUT http://localhost:8080/api/v1/clusters/ambari_cluster/services \
->      -d '{"RequestInfo":{"context":"Stop All Services"},"Body":{"ServiceInfo":{"state":"INSTALLED"}}}'
+> curl -s -u admin:admin -H "X-Requested-By: ambari" -X PUT http://ambari-server:8080/api/v1/clusters/ambari_cluster/services -d '{"RequestInfo":{"context":"Stop All Services"},"Body":{"ServiceInfo":{"state":"INSTALLED"}}}'
 >
 > # Wait a few minutes, then delete cluster and blueprint
-> curl -s -u admin:admin -H "X-Requested-By: ambari" \
->      -X DELETE http://localhost:8080/api/v1/clusters/ambari_cluster
+> curl -s -u admin:admin -H "X-Requested-By: ambari" -X DELETE http://ambari-server:8080/api/v1/clusters/ambari_cluster
 >
-> curl -s -u admin:admin -H "X-Requested-By: ambari" \
->      -X DELETE http://localhost:8080/api/v1/blueprints/ambari_cluster
+> curl -s -u admin:admin -H "X-Requested-By: ambari" -X DELETE http://ambari-server:8080/api/v1/blueprints/ambari_cluster
 > ```
 
 ---
