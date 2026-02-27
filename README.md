@@ -224,7 +224,7 @@ Open Ambari UI, login and follow the cluster creation wizard step by step. Great
 ```
 http://ambari-server:8080
 ```
-Login: `admin / admin`
+Refer to below section 'BigData Service Links & Credentials' for login credentials.
 
 ### ⚡ Auto Script — For the Creatively Lazy 🛋️
 Ain't nobody got time for 15 wizard screens. One command, one coffee, one fully provisioned cluster — complete with **HDFS, YARN and MapReduce2** installed and ready to use.
@@ -323,9 +323,6 @@ The metrics/graphs area on the dashboard appears blank. Ambari Metrics packages 
 
 **Heartbeat Delay**
 After stopping a container, Ambari continues showing it as alive for ~5 minutes while it waits for missed heartbeats. No cause for alarm.
-
-**Cluster Wiped on docker-compose down**
-PostgreSQL lives inside the container, not in an external volume. Running `docker-compose down` destroys the cluster config. Simply run `setup-cluster.sh` again after bringing containers back up.
 
 ---
 *"Every great engineer started as a confused beginner with a broken cluster — first they Googled, then they Stack Overflowed, now they just ask AI. The struggle evolves. Welcome to the journey."* 🚀
