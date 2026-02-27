@@ -175,7 +175,7 @@ mkdir bigdata-docker-lab
 cd bigdata-docker-lab
 
 # Download docker-compose.yml
-# Windows (PowerShell)
+# Windows (cmd)
 curl -o docker-compose.yml https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/docker-compose.yml
 
 # Mac / Linux
