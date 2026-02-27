@@ -207,12 +207,11 @@ Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). Al
 | `docker stop ambari-s3` | Stop a single container |
 | `docker start ambari-s3` | Start a single container |
 
-> 🔄 **To scrap everything and start fresh** — stop and destroy all containers, then bring them back up:
+> 🔄 **To scrap everything and start fresh** — stop and destroy all containers, then start fresh:
 > ```bash
 > docker-compose down
 > docker-compose up -d
 > ```
-> Then run `setup-cluster.sh` again to recreate the cluster.
 
 ---
 
