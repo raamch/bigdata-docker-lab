@@ -188,11 +188,14 @@ https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/dock
 ```
 
 **2. Fire up the containers:**
-
+# Windows (cmd)
 ```bash
 docker-compose up -d
 ```
-
+# Mac / Linux
+```bash
+docker compose up -d
+```
 Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). All 4 containers start automatically.
 
 > ⏳ Once all containers are ready, wait at least 30 seconds before proceeding — Ambari Server needs time to initialise.
