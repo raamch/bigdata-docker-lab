@@ -188,12 +188,12 @@ https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/dock
 ```
 
 **2. Fire up the containers:**
-# Windows (cmd)
+
 ```bash
+Windows (cmd)
 docker-compose up -d
-```
-# Mac / Linux
-```bash
+
+Mac / Linux
 docker compose up -d
 ```
 Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). All 4 containers start automatically.
