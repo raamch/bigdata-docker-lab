@@ -242,7 +242,7 @@ http://ambari-server:8080/#/main/background-operations
 ```
 > ⏳ Installation takes 10-30 minutes depending on your machine spec. Services will appear red until complete — that's normal, not a fire. 🔥
 
-> ⚠️ **To reinstall from scratch**, run these commands first to delete the existing cluster and blueprint, then rerun the script:
+> ⚠️ **To reconfigure the cluster from scratch**, run these commands first to delete the existing cluster and blueprint, then rerun the setup-cluster script:
 > ```bash
 > # Stop all services first
 > curl -s -u admin:admin -H "X-Requested-By: ambari" -X PUT http://ambari-server:8080/api/v1/clusters/ambari_cluster/services -d '{"RequestInfo":{"context":"Stop All Services"},"Body":{"ServiceInfo":{"state":"INSTALLED"}}}'
