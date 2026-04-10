@@ -321,10 +321,10 @@ Running on a laptop with limited RAM? Edit the `mem_limit` values in `docker-com
 
 ## 🔧 Heads Up — Things You Should Know
 
-**Blank Ambari Dashboard**
+**Blank Ambari Dashboard:**
 The metrics/graphs area on the dashboard appears blank. Ambari Metrics packages (`ambari-metrics-monitor` etc.) are not available in the Bigtop 3.2.1 repo and require a separate build (AMBARI-25918). All services work perfectly — the blank area is cosmetic only.
 
-**Heartbeat Delay**
+**Heartbeat Delay:**
 After stopping a container, Ambari continues showing it as alive for ~5 minutes while it waits for missed heartbeats. No cause for alarm.
 
 ---
