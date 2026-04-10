@@ -190,10 +190,6 @@ https://raw.githubusercontent.com/raamch/bigdata-docker-lab/refs/heads/main/dock
 **2. Fire up the containers:**
 
 ```bash
-Windows (cmd)
-docker-compose up -d
-
-Mac / Linux
 docker compose up -d
 ```
 Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). All 4 containers start automatically.
@@ -204,9 +200,9 @@ Docker pulls the image on first run (~2GB — perfect time for a coffee ☕). Al
 
 | Command | Description |
 |---|---|
-| `docker-compose up -d` | Start all containers in the background |
-| `docker-compose down` | Stop and destroy all containers |
-| `docker-compose start/stop` | Start/stop without destroying containers |
+| `docker compose up -d` | Start all containers in the background |
+| `docker compose down` | Stop and destroy all containers |
+| `docker compose start/stop` | Start/stop without destroying containers |
 | `docker stop ambari-s3` | Stop a single container |
 | `docker start ambari-s3` | Start a single container |
 
