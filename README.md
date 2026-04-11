@@ -152,11 +152,12 @@ sudo nano /etc/hosts
 Add these lines:
 ```
 # Ambari container hostnames
-10.10.0.10  ambari-server.ambari.local  ambari-server
-10.10.0.11  ambari-s1.ambari.local      ambari-s1
-10.10.0.12  ambari-s2.ambari.local      ambari-s2
-10.10.0.13  ambari-s3.ambari.local      ambari-s3
+127.0.0.1  ambari-server.ambari.local  ambari-server
+127.0.0.1  ambari-s1.ambari.local      ambari-s1
+127.0.0.1  ambari-s2.ambari.local      ambari-s2
+127.0.0.1  ambari-s3.ambari.local      ambari-s3
 ```
+> 💡 **Note:** If you are installing the docker on a remote machine, then use remote machine IP number instead of 127.0.0.1
 
 ---
 
