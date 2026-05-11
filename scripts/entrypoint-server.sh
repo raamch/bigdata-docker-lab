@@ -72,5 +72,11 @@ fi
 # Enable Ambari Server autostart
 systemctl enable ambari-server
 
+# Pre-create Hadoop directories with correct permissions
+mkdir -p /hadoop/yarn/local /hadoop/yarn/logs /hadoop/hdfs/data /hadoop/hdfs/namenode
+chmod -R 755 /hadoop
+chown -R yarn:hadoop /hadoop/yarn 2>/dev/null || true
+chown -R hdfs:hadoop /hadoop/hdfs 2>/dev/null || true
+
 # Hand over to systemd
 exec /sbin/init

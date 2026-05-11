@@ -42,5 +42,11 @@ echo never > /sys/kernel/mm/transparent_hugepage/enabled 2>/dev/null || true
 echo never > /sys/kernel/mm/transparent_hugepage/defrag  2>/dev/null || true
 sysctl -w vm.swappiness=10 2>/dev/null || true
 
+# Pre-create Hadoop directories with correct permissions
+mkdir -p /hadoop/yarn/local /hadoop/yarn/logs /hadoop/hdfs/data /hadoop/hdfs/namenode
+chmod -R 755 /hadoop
+chown -R yarn:hadoop /hadoop/yarn 2>/dev/null || true
+chown -R hdfs:hadoop /hadoop/hdfs 2>/dev/null || true
+
 # Hand over to systemd - it will auto-start ambari-agent
 exec /sbin/init
