@@ -84,6 +84,23 @@ COPY conf/os_family.json /usr/lib/ambari-server/lib/ambari_commons/resources/os_
 COPY conf/os_family.json /usr/lib/ambari-agent/lib/ambari_commons/resources/os_family.json
 COPY conf/os_family.json /var/lib/ambari-agent/bin/ambari_commons/resources/os_family.json
 
+# 7c. Pre-install Hadoop ecosystem packages to avoid download delays
+RUN dnf install -y \
+        hadoop \
+        hadoop-client \
+        hadoop-hdfs \
+        hadoop-hdfs-namenode \
+        hadoop-hdfs-datanode \
+        hadoop-hdfs-secondarynamenode \
+        hadoop-yarn \
+        hadoop-yarn-resourcemanager \
+        hadoop-yarn-nodemanager \
+        hadoop-mapreduce \
+        hadoop-mapreduce-historyserver \
+        zookeeper \
+        zookeeper-server \
+    && dnf clean all
+
 # 8. OS hardening
 RUN mkdir -p /etc/selinux && \
     echo 'SELINUX=disabled' > /etc/selinux/config && \
@@ -93,6 +110,13 @@ RUN mkdir -p /etc/selinux && \
 
 # 8a. Fix OS identification for Ambari compatibility
 RUN echo 'CentOS Linux release 7.9.1908 (Core)' > /etc/redhat-release
+
+# 8b. Pre-create Hadoop working directories
+RUN mkdir -p /hadoop/yarn/local && \
+    mkdir -p /hadoop/yarn/logs && \
+    mkdir -p /hadoop/hdfs/data && \
+    mkdir -p /hadoop/hdfs/namenode && \
+    chmod -R 755 /hadoop
 
 # 9. SSH setup
 RUN ssh-keygen -A && \
